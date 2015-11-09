@@ -1,0 +1,17 @@
+<component name="ArtifactManager">
+  <artifact type="jar" build-on-make="true" name="myGUIdb">
+    <output-path>$PROJECT_DIR$/out/artifacts/myGUIdb</output-path>
+    <root id="archive" name="myGUIdb.jar">
+      <element id="module-output" name="JDBC_swing_GUI_app_loginAndDbTables" />
+      <element id="file-copy" path="$APPLICATION_HOME_DIR$/lib/jgoodies-forms.jar" />
+      <element id="file-copy" path="$PROJECT_DIR$/../../jdbc tut/mysql-connector-java-5.1.37-bin.jar" />
+      <element id="directory" name="META-INF">
+        <element id="file-copy" path="$PROJECT_DIR$/out/goMakeJar/META-INF/MANIFEST.MF" />
+        <element id="file-copy" path="$PROJECT_DIR$/out/META-INF/MANIFEST.MF" />
+        <element id="file-copy" path="$PROJECT_DIR$/out/artifacts/META-INF/MANIFEST.MF" />
+        <element id="file-copy" path="$PROJECT_DIR$/META-INF/MANIFEST.MF" />
+        <element id="dir-copy" path="$PROJECT_DIR$" />
+      </element>
+    </root>
+  </artifact>
+</component>

@@ -20,7 +20,7 @@
     <colspec value="left:4dlu:noGrow"/>
     <colspec value="fill:max(d;4px):noGrow"/>
     <constraints>
-      <xy x="20" y="20" width="553" height="420"/>
+      <xy x="20" y="20" width="553" height="432"/>
     </constraints>
     <properties>
       <foreground color="-9154304"/>
@@ -31,13 +31,11 @@
     </border>
     <children>
       <grid id="94a3a" layout-manager="FormLayout">
-        <rowspec value="center:236px:grow"/>
-        <rowspec value="top:4dlu:noGrow"/>
         <rowspec value="center:d:grow"/>
         <colspec value="fill:d:grow"/>
         <constraints>
           <grid row="4" column="0" row-span="3" col-span="9" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
-          <forms/>
+          <forms defaultalign-vert="false"/>
         </constraints>
         <properties>
           <font size="16"/>
@@ -45,28 +43,39 @@
         </properties>
         <border type="none"/>
         <children>
-          <grid id="a05db" layout-manager="FormLayout">
-            <rowspec value="center:d:grow"/>
-            <colspec value="fill:d:grow"/>
+          <grid id="a05db" binding="panelForTable" layout-manager="FormLayout">
+            <rowspec value="center:263px:noGrow"/>
+            <colspec value="fill:527px:noGrow"/>
             <constraints>
-              <grid row="2" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
-              <forms/>
+              <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+              <forms defaultalign-horz="false" defaultalign-vert="false"/>
             </constraints>
             <properties/>
             <border type="none"/>
-            <children/>
+            <children>
+              <component id="19ac7" class="javax.swing.JTable" binding="table1" default-binding="true">
+                <constraints>
+                  <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="7" hsize-policy="7" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+                  <forms defaultalign-horz="false" defaultalign-vert="false"/>
+                </constraints>
+                <properties>
+                  <autoCreateColumnsFromModel value="true"/>
+                  <autoCreateRowSorter value="true"/>
+                  <autoResizeMode value="4"/>
+                  <background color="-10196885"/>
+                  <fillsViewportHeight value="true"/>
+                  <font size="18"/>
+                  <opaque value="true"/>
+                  <preferredSize width="200" height="32"/>
+                  <requestFocusEnabled value="true"/>
+                  <rowSelectionAllowed value="true"/>
+                  <showHorizontalLines value="true"/>
+                  <showVerticalLines value="true"/>
+                  <surrendersFocusOnKeystroke value="false"/>
+                </properties>
+              </component>
+            </children>
           </grid>
-          <component id="19ac7" class="javax.swing.JTable" binding="table1" default-binding="true">
-            <constraints>
-              <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="6" hsize-policy="6" anchor="0" fill="3" indent="0" use-parent-layout="false">
-                <preferred-size width="150" height="50"/>
-              </grid>
-              <forms defaultalign-horz="false" defaultalign-vert="false"/>
-            </constraints>
-            <properties>
-              <font size="18"/>
-            </properties>
-          </component>
         </children>
       </grid>
       <grid id="1d904" layout-manager="GridLayoutManager" row-count="1" column-count="5" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
@@ -99,7 +108,7 @@
               <alignmentX value="0.0"/>
               <autoscrolls value="true"/>
               <font size="20" style="2"/>
-              <horizontalAlignment value="2"/>
+              <horizontalAlignment value="0"/>
               <text value=""/>
             </properties>
           </component>
@@ -144,7 +153,7 @@
               <forms defaultalign-horz="false"/>
             </constraints>
             <properties>
-              <font size="18"/>
+              <font size="20" style="2"/>
             </properties>
           </component>
           <component id="2d4bf" class="javax.swing.JLabel">

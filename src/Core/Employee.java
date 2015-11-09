@@ -30,7 +30,7 @@ public class Employee {
         this.id = id;
     }
 
-    public String getLasnName() {
+    public String getLastName() {
         return lasnName;
     }
 

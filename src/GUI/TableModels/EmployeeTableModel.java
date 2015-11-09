@@ -19,7 +19,7 @@ public class EmployeeTableModel extends AbstractTableModel {
             "Salary"};
     private List<Employee> employees;
 
-    public EmployeeTableModel(List<Employee> employees){
+    public EmployeeTableModel(List<Employee> employees) {
         this.employees = employees;
     }
 
@@ -47,9 +47,9 @@ public class EmployeeTableModel extends AbstractTableModel {
     public Object getValueAt(int rowIndex, int columnIndex) {
         Employee employee = employees.get(rowIndex);
 
-        switch (columnIndex){
+        switch (columnIndex) {
             case LAST_NAME_COL:
-                return employee.getLasnName();
+                return employee.getLastName();
             case FIRST_NAME_COL:
                 return employee.getFirstName();
             case EMAIL_COL:
@@ -57,7 +57,7 @@ public class EmployeeTableModel extends AbstractTableModel {
             case OBJECT_COL:
                 return employee;
             default:
-                return employee.getLasnName();
+                return employee.getLastName();
         }
     }
 }

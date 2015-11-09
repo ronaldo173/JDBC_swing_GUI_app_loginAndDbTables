@@ -5,12 +5,12 @@ import DBconnection.DbConnect;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
-import java.beans.Statement;
 import java.io.IOException;
-import java.sql.Connection;
 import java.sql.SQLException;
 
 public class LoginDialog extends JDialog {
+    Image icon;
+    ImageIcon iconUser, iconPassword;
     private JPanel contentPane;
     private JButton buttonOK;
     private JButton buttonCancel;
@@ -18,8 +18,6 @@ public class LoginDialog extends JDialog {
     private JPasswordField passwordField1;
     private JLabel labelUser;
     private JLabel labelPassword;
-    Image icon;
-    ImageIcon iconUser, iconPassword;
 
     public LoginDialog() {
         icon = Toolkit.getDefaultToolkit().getImage("icons/login.png");
@@ -104,7 +102,7 @@ public class LoginDialog extends JDialog {
 //        System.out.println(nameFromField + " - " + passwordFromField);
 
 
-        if(new DbConnect().checkLoginPassword(nameFromField, passwordFromField)){
+        if (new DbConnect().checkLoginPassword(nameFromField, passwordFromField)) {
             System.out.println("Entered succesfully");
 //            setModal(false);
             setVisible(false);
@@ -113,10 +111,10 @@ public class LoginDialog extends JDialog {
             frame.setTextFieldLoggedBy(textFieldUser.getText());
 //            frame.setLoggedInUserName(nameFromField);
             frame.setVisible(true);
-        }else {
+        } else {
             int tryOkNo = JOptionPane.showConfirmDialog(this, "Login or password not correct! \nTry again?", "Login error",
                     JOptionPane.YES_OPTION);
-            if (tryOkNo ==0) {
+            if (tryOkNo == 0) {
                 textFieldUser.setText(null);
                 passwordField1.setText(null);
             } else {

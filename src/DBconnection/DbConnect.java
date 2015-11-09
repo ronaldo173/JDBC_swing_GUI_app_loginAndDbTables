@@ -4,7 +4,6 @@ import Core.Employee;
 import Core.User;
 
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.sql.*;
@@ -36,23 +35,31 @@ public class DbConnect {
         System.out.println("Connected to db: " + url);
     }
 
+    public static void main(String[] args) throws IOException, SQLException {
+        DbConnect dbConnect = new DbConnect();
+        Employee employee = new Employee("Vitaliy", "Klichko", "kli4@mail.ru",
+                BigDecimal.valueOf(111000));
+        System.out.println(employee);
+        dbConnect.addEmployee(employee, 13);
+    }
+
     public boolean checkLoginPassword(String log, String pass) throws SQLException {
         Statement statement = null;
 
-        try{
+        try {
             statement = connection.createStatement();
             ResultSet resultSet = statement.executeQuery("Select  last_name, password from users");
 
-            while (resultSet.next()){
-                String dbLogin= resultSet.getString("last_name");
+            while (resultSet.next()) {
+                String dbLogin = resultSet.getString("last_name");
                 String dbPassword = resultSet.getString("password");
-                if (log.equals(dbLogin) && pass.equals(dbPassword)){
+                if (log.equals(dbLogin) && pass.equals(dbPassword)) {
                     System.out.println("Login:  is right,password too, you entered as:" + log);
                     return true;
                 }
             }
             return false;
-        }finally {
+        } finally {
             close(statement);
         }
     }
@@ -66,7 +73,7 @@ public class DbConnect {
                     "WHERE id = ?");
 
             preparedStatement.setString(1, employee.getFirstName());
-            preparedStatement.setString(2, employee.getLasnName());
+            preparedStatement.setString(2, employee.getLastName());
             preparedStatement.setString(3, employee.getEmail());
             preparedStatement.setBigDecimal(4, employee.getSalary());
             preparedStatement.setInt(5, employee.getId());
@@ -88,7 +95,7 @@ public class DbConnect {
                     " VALUES (?, ?, ?, ?)");
 
             preparedStatement.setString(1, employee.getFirstName());
-            preparedStatement.setString(2, employee.getLasnName());
+            preparedStatement.setString(2, employee.getLastName());
             preparedStatement.setString(3, employee.getEmail());
             preparedStatement.setBigDecimal(4, employee.getSalary());
 //            preparedStatement.setInt();
@@ -131,6 +138,7 @@ public class DbConnect {
             lastName += "%";
             statement = connection.prepareStatement("SELECT * FROM employees WHERE " +
                     "last_name like ? ");
+            statement.setString(1, lastName);
             resultSet = statement.executeQuery();
 
             while (resultSet.next()) {
@@ -197,13 +205,5 @@ public class DbConnect {
         String email = resSet.getString("email");
 
         return new User(id, lastName, firstName, email);
-    }
-
-    public static void main(String[] args) throws IOException, SQLException {
-        DbConnect dbConnect = new DbConnect();
-        Employee employee = new Employee("Vitaliy", "Klichko", "kli4@mail.ru",
-                BigDecimal.valueOf(111000));
-        System.out.println(employee);
-        dbConnect.addEmployee(employee, 13);
     }
 }
