@@ -1,8 +1,13 @@
 package GUI;
 
+import Core.Employee;
+import DBconnection.DbConnect;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.math.BigDecimal;
+import java.sql.SQLException;
 
 public class AddEmployees extends JDialog {
     ImageIcon iconAdd;
@@ -19,6 +24,12 @@ public class AddEmployees extends JDialog {
     private JLabel labelAddForPic;
     private JButton salaryButton;
     private JTextField textFieldSalary;
+
+    private DbConnect dbConnect = null;
+    private boolean isUpdateMode = false;
+    private Employee previousEmployee = null;
+    private EmployeeSearchApp employeeSearchApp = null;
+
     public AddEmployees() {
         iconAdd = new ImageIcon(new ImageIcon("icons/addBig.png").getImage().getScaledInstance(168, 168, Image.SCALE_DEFAULT));
         image = Toolkit.getDefaultToolkit().getImage("icons/add.png");
@@ -60,6 +71,28 @@ public class AddEmployees extends JDialog {
         }, KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
     }
 
+    public AddEmployees(EmployeeSearchApp employeeSearchApp, DbConnect dbConnect) {
+       this(employeeSearchApp, dbConnect, null, false);
+    }
+
+    public AddEmployees(EmployeeSearchApp employeeSearchApp, DbConnect dbConnect, Employee previousEMployee, boolean isUpdate) {
+    this();
+        this.dbConnect = dbConnect;
+        this.employeeSearchApp = employeeSearchApp;
+        this.previousEmployee = previousEMployee;
+        isUpdateMode = isUpdate;
+        if(isUpdate){
+            insertIntoFormSelected(previousEMployee);
+        }
+    }
+
+    private void insertIntoFormSelected(Employee previousEMployee) {
+        textFieldFirstName.setText(previousEMployee.getFirstName());
+        textFieldLastName.setText(previousEMployee.getLastName());
+        textFieldEmail.setText(previousEMployee.getEmail());
+        textFieldSalary.setText(previousEMployee.getSalary().toString());
+    }
+
     public static void main(String[] args) {
         AddEmployees dialog = new AddEmployees();
         dialog.pack();
@@ -72,8 +105,62 @@ public class AddEmployees extends JDialog {
     }
 
     private void onOK() {
-// add your code here
+        saveEmployee();
         dispose();
+    }
+
+    private void saveEmployee() {
+        String firstName = textFieldFirstName.getText();
+        String lastName = textFieldLastName.getText();
+        String email = textFieldEmail.getText();
+        BigDecimal salary = convertToBigDecimal(textFieldSalary.getText());
+
+        Employee tempEmployee = null;
+        if(isUpdateMode){
+            tempEmployee = previousEmployee;
+            tempEmployee.setLasnName(lastName);
+            tempEmployee.setFirstName(firstName);
+            tempEmployee.setEmail(email);
+            tempEmployee.setSalary(salary);
+        }{
+            tempEmployee = new Employee(lastName,firstName,email,salary);
+        }
+
+        //save to db
+        try{
+            if(isUpdateMode){
+                dbConnect.updateEmployee(tempEmployee,0);
+            }else {
+                dbConnect.addEmployee(tempEmployee, 0);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        setVisible(false);
+        dispose();
+        try {
+            employeeSearchApp.refrestEmployeeView();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        JOptionPane.showMessageDialog(employeeSearchApp, "Employee saves succesfully!",
+                "Saved!", JOptionPane.INFORMATION_MESSAGE);
+
+    }
+
+    private BigDecimal convertToBigDecimal(String text) {
+        BigDecimal bigDecimal = null;
+
+        try{
+            double temp = Double.parseDouble(text);
+            bigDecimal = BigDecimal.valueOf(temp);
+        }catch (Exception e){
+            System.out.println("Error in " + this.getName());
+            bigDecimal = BigDecimal.valueOf(0.0);
+        }
+        return bigDecimal;
     }
 
     private void onCancel() {

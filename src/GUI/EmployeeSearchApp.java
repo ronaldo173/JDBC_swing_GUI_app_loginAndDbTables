@@ -28,6 +28,7 @@ public class EmployeeSearchApp extends JFrame {
     private JTextField textFieldLoggedBy;
     private JButton butExit;
     private JPanel panelForTable;
+    private JScrollPane jscrollTable;
 
     public EmployeeSearchApp(DbConnect theDbConnect) {
 //        super();
@@ -78,10 +79,6 @@ public class EmployeeSearchApp extends JFrame {
                     EmployeeTableModel employeeTableModel = new EmployeeTableModel(employeeList);
                     table1.setModel(employeeTableModel);
                     table1.setFont(new Font("Calibri", Font.ITALIC, 16));
-//                    panelForTable.add(table1.getTableHeader(), BorderLayout.NORTH);
-//                    panelForTable.add(table1, BorderLayout.CENTER);
-//                    JScrollPane jScrollPane= new JScrollPane();
-//                    jScrollPane.add(panelForTable);
 
                 } catch (SQLException e1) {
                     JOptionPane.showMessageDialog(EmployeeSearchApp.this, "Error Search: "
@@ -91,23 +88,31 @@ public class EmployeeSearchApp extends JFrame {
         });
         panelFromForm.addComponentListener(new ComponentAdapter() {
         });
-        butAddEmployee.addActionListener(new ActionListener() {
+        butAddEmployee.addActionListener(new ActionListener() { //ADD
             @Override
             public void actionPerformed(ActionEvent e) {
-                AddEmployees addEmployees = new AddEmployees();
+
+                AddEmployees addEmployees = new AddEmployees(EmployeeSearchApp.this, dbConnect);
                 addEmployees.setVisible(true);
-                System.out.println("Add employee");
             }
         });
         butUpdateEmployee.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                AddEmployees updateEmployee = new AddEmployees();
+                int row = table1.getSelectedRow();
+
+                if (row < 0){
+                    JOptionPane.showMessageDialog(EmployeeSearchApp.this, "You have to select an employee" ,
+                            "Error(add employee)", JOptionPane.ERROR_MESSAGE);
+                return;
+                }
+                Employee tempEmployee = (Employee) table1.getValueAt(row, EmployeeTableModel.OBJECT_COL);
+                AddEmployees updateEmployee = new AddEmployees(EmployeeSearchApp.this, dbConnect,
+                        tempEmployee, true);
                 iconUpdateBig = new ImageIcon(new ImageIcon("icons/updateBig.png").getImage().getScaledInstance(168, 168, Image.SCALE_DEFAULT));
                 updateEmployee.setLabelAddForPic(iconUpdateBig);
                 updateEmployee.setTitle("Update employee");
                 updateEmployee.setVisible(true);
-                System.out.println("Update employee");
             }
         });
         butViewHistory.addActionListener(new ActionListener() {
@@ -141,5 +146,18 @@ public class EmployeeSearchApp extends JFrame {
 
     public void setTextFieldLoggedBy(String text) {
         this.textFieldLoggedBy.setText(text);
+    }
+
+    public void refrestEmployeeView() throws SQLException {
+        java.util.List<Employee> employeeList = null;
+        try {
+            employeeList = dbConnect.getAllEmployees();
+            EmployeeTableModel model = new EmployeeTableModel(employeeList);
+            table1.setModel(model);
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(this, "Error: " + e,
+                    "Error", JOptionPane.ERROR_MESSAGE);
+        }
+
     }
 }
