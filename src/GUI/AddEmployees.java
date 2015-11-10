@@ -110,6 +110,7 @@ public class AddEmployees extends JDialog {
     }
 
     private void saveEmployee() {
+        System.out.println("pressed save");
         String firstName = textFieldFirstName.getText();
         String lastName = textFieldLastName.getText();
         String email = textFieldEmail.getText();
@@ -122,7 +123,7 @@ public class AddEmployees extends JDialog {
             tempEmployee.setFirstName(firstName);
             tempEmployee.setEmail(email);
             tempEmployee.setSalary(salary);
-        }{
+        }else {
             tempEmployee = new Employee(lastName,firstName,email,salary);
         }
 

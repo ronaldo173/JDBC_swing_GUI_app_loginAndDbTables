@@ -109,6 +109,7 @@ public class EmployeeSearchApp extends JFrame {
                 Employee tempEmployee = (Employee) table1.getValueAt(row, EmployeeTableModel.OBJECT_COL);
                 AddEmployees updateEmployee = new AddEmployees(EmployeeSearchApp.this, dbConnect,
                         tempEmployee, true);
+
                 iconUpdateBig = new ImageIcon(new ImageIcon("icons/updateBig.png").getImage().getScaledInstance(168, 168, Image.SCALE_DEFAULT));
                 updateEmployee.setLabelAddForPic(iconUpdateBig);
                 updateEmployee.setTitle("Update employee");

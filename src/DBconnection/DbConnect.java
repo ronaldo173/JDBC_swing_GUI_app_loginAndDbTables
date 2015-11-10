@@ -65,6 +65,8 @@ public class DbConnect {
     }
 
     public void updateEmployee(Employee employee, int userId) throws SQLException {
+        System.out.println("method updateEmployee");
+        System.out.println(employee);
         PreparedStatement preparedStatement = null;
 
         try {
