@@ -24,7 +24,8 @@
     </constraints>
     <properties>
       <foreground color="-9154304"/>
-      <preferredSize width="550" height="450"/>
+      <minimumSize width="413" height="353"/>
+      <preferredSize width="550" height="550"/>
     </properties>
     <border type="none" title="Search app">
       <font size="16"/>
@@ -201,7 +202,7 @@
               <forms/>
             </constraints>
             <properties>
-              <font size="18"/>
+              <font size="16"/>
               <text value="Enter last name"/>
             </properties>
           </component>

@@ -54,6 +54,8 @@ public class EmployeeTableModel extends AbstractTableModel {
                 return employee.getFirstName();
             case EMAIL_COL:
                 return employee.getEmail();
+            case SALARY_COL:
+                return employee.getSalary();
             case OBJECT_COL:
                 return employee;
             default:

@@ -1,5 +1,6 @@
 package DBconnection;
 
+import Core.AuditHistory;
 import Core.Employee;
 import Core.User;
 
@@ -197,6 +198,42 @@ public class DbConnect {
             return list;
         } finally {
             close(statement, resSet);
+        }
+    }
+
+    public List<AuditHistory> getAuditHIstory(int employeeID) throws SQLException {
+        List<AuditHistory> list = new ArrayList<>();
+
+        Statement statement = null;
+        ResultSet resultSet = null;
+
+        try {
+            statement = connection.createStatement();
+
+
+            String sql = "SELECT history.user_id, history.employee_id, history.action, history.action_date_time, users.first_name, users.last_name  "
+                    + "FROM audit_history history, users users "
+                    + "WHERE history.user_id=users.id AND history.employee_id=" + employeeID;
+
+            resultSet = statement.executeQuery(sql);
+
+            while (resultSet.next()) {
+                int userId = resultSet.getInt("history.user_id");
+                String action = resultSet.getString("history.action");
+
+                Timestamp timestamp = resultSet.getTimestamp("history.action_date_time");
+                Date actionDateTime = new Date(timestamp.getTime());
+
+                String userFirstName = resultSet.getString("users.first_name");
+                String userLastName = resultSet.getString("users.last_name");
+
+                AuditHistory temp = new AuditHistory(userId, employeeID, action, actionDateTime, userFirstName, userLastName);
+                list.add(temp);
+            }
+            return list;
+
+        } finally {
+            close(statement, resultSet);
         }
     }
 

@@ -101,10 +101,10 @@ public class EmployeeSearchApp extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 int row = table1.getSelectedRow();
 
-                if (row < 0){
-                    JOptionPane.showMessageDialog(EmployeeSearchApp.this, "You have to select an employee" ,
+                if (row < 0) {
+                    JOptionPane.showMessageDialog(EmployeeSearchApp.this, "You have to select an employee",
                             "Error(add employee)", JOptionPane.ERROR_MESSAGE);
-                return;
+                    return;
                 }
                 Employee tempEmployee = (Employee) table1.getValueAt(row, EmployeeTableModel.OBJECT_COL);
                 AddEmployees updateEmployee = new AddEmployees(EmployeeSearchApp.this, dbConnect,
@@ -119,7 +119,8 @@ public class EmployeeSearchApp extends JFrame {
         butViewHistory.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                System.out.println("View history");
+                AuditHistory auditHistory = new AuditHistory();
+                auditHistory.setVisible(true);
             }
         });
         butExit.addActionListener(new ActionListener() {

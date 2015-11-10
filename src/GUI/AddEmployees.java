@@ -72,25 +72,18 @@ public class AddEmployees extends JDialog {
     }
 
     public AddEmployees(EmployeeSearchApp employeeSearchApp, DbConnect dbConnect) {
-       this(employeeSearchApp, dbConnect, null, false);
+        this(employeeSearchApp, dbConnect, null, false);
     }
 
     public AddEmployees(EmployeeSearchApp employeeSearchApp, DbConnect dbConnect, Employee previousEMployee, boolean isUpdate) {
-    this();
+        this();
         this.dbConnect = dbConnect;
         this.employeeSearchApp = employeeSearchApp;
         this.previousEmployee = previousEMployee;
         isUpdateMode = isUpdate;
-        if(isUpdate){
+        if (isUpdate) {
             insertIntoFormSelected(previousEMployee);
         }
-    }
-
-    private void insertIntoFormSelected(Employee previousEMployee) {
-        textFieldFirstName.setText(previousEMployee.getFirstName());
-        textFieldLastName.setText(previousEMployee.getLastName());
-        textFieldEmail.setText(previousEMployee.getEmail());
-        textFieldSalary.setText(previousEMployee.getSalary().toString());
     }
 
     public static void main(String[] args) {
@@ -98,6 +91,13 @@ public class AddEmployees extends JDialog {
         dialog.pack();
         dialog.setVisible(true);
         System.exit(0);
+    }
+
+    private void insertIntoFormSelected(Employee previousEMployee) {
+        textFieldFirstName.setText(previousEMployee.getFirstName());
+        textFieldLastName.setText(previousEMployee.getLastName());
+        textFieldEmail.setText(previousEMployee.getEmail());
+        textFieldSalary.setText(previousEMployee.getSalary().toString());
     }
 
     public void setLabelAddForPic(ImageIcon icon) {
@@ -117,21 +117,21 @@ public class AddEmployees extends JDialog {
         BigDecimal salary = convertToBigDecimal(textFieldSalary.getText());
 
         Employee tempEmployee = null;
-        if(isUpdateMode){
+        if (isUpdateMode) {
             tempEmployee = previousEmployee;
             tempEmployee.setLasnName(lastName);
             tempEmployee.setFirstName(firstName);
             tempEmployee.setEmail(email);
             tempEmployee.setSalary(salary);
-        }else {
-            tempEmployee = new Employee(lastName,firstName,email,salary);
+        } else {
+            tempEmployee = new Employee(lastName, firstName, email, salary);
         }
 
         //save to db
-        try{
-            if(isUpdateMode){
-                dbConnect.updateEmployee(tempEmployee,0);
-            }else {
+        try {
+            if (isUpdateMode) {
+                dbConnect.updateEmployee(tempEmployee, 0);
+            } else {
                 dbConnect.addEmployee(tempEmployee, 0);
             }
         } catch (SQLException e) {
@@ -154,10 +154,10 @@ public class AddEmployees extends JDialog {
     private BigDecimal convertToBigDecimal(String text) {
         BigDecimal bigDecimal = null;
 
-        try{
+        try {
             double temp = Double.parseDouble(text);
             bigDecimal = BigDecimal.valueOf(temp);
-        }catch (Exception e){
+        } catch (Exception e) {
             System.out.println("Error in " + this.getName());
             bigDecimal = BigDecimal.valueOf(0.0);
         }
