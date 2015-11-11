@@ -16,10 +16,6 @@ import java.util.Properties;
  * Created by Santer on 09.11.2015.
  */
 public class DbConnect {
-    public Connection getConnection() {
-        return connection;
-    }
-
     private Connection connection;
 
     public DbConnect() throws IOException {
@@ -38,6 +34,10 @@ public class DbConnect {
             e.printStackTrace();
         }
         System.out.println("Connected to db: " + url);
+    }
+
+    public Connection getConnection() {
+        return connection;
     }
 
     public boolean checkLoginPassword(String log, String pass) throws SQLException {
@@ -222,12 +222,9 @@ public class DbConnect {
         }
     }
 
+    //history of one
     public List<AuditHistory> getAuditHIstory(int employeeID) throws SQLException {
-        System.out.println("**** FROM getAuditHist ***");
-        System.out.println("called getAuditHIstory.....employee id = " + employeeID);
-        System.out.println("***********");
         List<AuditHistory> list = new ArrayList<>();
-
         Statement statement = null;
         ResultSet resultSet = null;
 
@@ -242,19 +239,49 @@ public class DbConnect {
 
             while (resultSet.next()) {
                 String action = resultSet.getString("action");
-
                 Timestamp timestamp = resultSet.getTimestamp("action_date_time");
                 Date actionDateTime = new Date(timestamp.getTime());
-
                 String userFirstName = resultSet.getString("first_name");
                 String userLastName = resultSet.getString("last_name");
-
                 AuditHistory temp = new AuditHistory(employeeID, action, actionDateTime, userFirstName, userLastName);
                 list.add(temp);
             }
-            for (AuditHistory auditHistory : list) {
-                System.out.println(auditHistory);
+//            for (AuditHistory auditHistory : list) {
+//                System.out.println(auditHistory);
+//            }
+            return list;
+
+        } finally {
+            close(statement, resultSet);
+        }
+    }
+
+    //all history
+    public List<AuditHistory> getAuditHIstoryAll() throws SQLException {
+        List<AuditHistory> list = new ArrayList<>();
+        Statement statement = null;
+        ResultSet resultSet = null;
+
+        try {
+            statement = connection.createStatement();
+
+            String mysql = "select employee_id, action, action_date_time, first_name, last_name " +
+                    "from audit_history INNER JOIN employees  ON employee_id = employees.id";
+            resultSet = statement.executeQuery(mysql);
+
+            while (resultSet.next()) {
+                int employeeID = resultSet.getInt("employee_id");
+                String action = resultSet.getString("action");
+                Timestamp timestamp = resultSet.getTimestamp("action_date_time");
+                Date actionDateTime = new Date(timestamp.getTime());
+                String userFirstName = resultSet.getString("first_name");
+                String userLastName = resultSet.getString("last_name");
+                AuditHistory temp = new AuditHistory(employeeID, action, actionDateTime, userFirstName, userLastName);
+                list.add(temp);
             }
+//            for (AuditHistory auditHistory : list) {
+//                System.out.println(auditHistory);
+//            }
             return list;
 
         } finally {
@@ -296,4 +323,6 @@ public class DbConnect {
             e.printStackTrace();
         }
     }
+
+
 }

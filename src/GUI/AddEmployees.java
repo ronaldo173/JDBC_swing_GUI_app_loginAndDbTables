@@ -150,7 +150,7 @@ public class AddEmployees extends JDialog {
             e.printStackTrace();
         }
 
-        JOptionPane.showMessageDialog(employeeSearchApp, "Employee saves succesfully!",
+        JOptionPane.showMessageDialog(employeeSearchApp, "Employee saved succesfully!",
                 "Saved!", JOptionPane.INFORMATION_MESSAGE);
 
     }
@@ -164,7 +164,7 @@ public class AddEmployees extends JDialog {
             statement = connection.createStatement();
             resultSet = statement.executeQuery("SELECT max(id) from employees");
             while (resultSet.next()) {
-                id = resultSet.getInt(1) +1;
+                id = resultSet.getInt(1) + 1;
             }
         } catch (SQLException e) {
             e.printStackTrace();

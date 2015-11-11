@@ -12,7 +12,7 @@ public class AuditHistory {
 
     private String userFirstName, userLastName;
 
-    public AuditHistory( int employeeId, String action, Date actionDateTime, String userFirstName, String userLastName) {
+    public AuditHistory(int employeeId, String action, Date actionDateTime, String userFirstName, String userLastName) {
         this.employeeId = employeeId;
         this.action = action;
         this.actionDateTime = actionDateTime;

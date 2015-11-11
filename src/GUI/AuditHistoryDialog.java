@@ -38,7 +38,6 @@ public class AuditHistoryDialog extends JDialog {
             }
         });
 
-
 // call onCancel() when cross is clicked
         setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
         addWindowListener(new WindowAdapter() {
@@ -74,7 +73,11 @@ public class AuditHistoryDialog extends JDialog {
     }
 
     public void populate(Employee tempEmployee, java.util.List<AuditHistory> auditHistoryList) {
-    labelEmployee.setText(tempEmployee.getFirstName() + " " + tempEmployee.getLastName());
+        if (tempEmployee != null) {
+            labelEmployee.setText(tempEmployee.getFirstName() + " " + tempEmployee.getLastName());
+        } else {
+            labelEmployee.setText("All employees history");
+        }
 
         AuditHistoryTableModel model = new AuditHistoryTableModel(auditHistoryList);
         table1.setModel(model);
@@ -83,12 +86,13 @@ public class AuditHistoryDialog extends JDialog {
         table1.getColumnModel().getColumn(AuditHistoryTableModel.DATE_TIME).setCellRenderer(tableCellRenderer);
     }
 
+
     private final class DateTimeCellRender extends DefaultTableCellRenderer {
-       SimpleDateFormat dateFormat = new SimpleDateFormat("dd//MM//yy hh:mm:ss");
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd//MM//yy hh:mm:ss");
 
         @Override
         public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
-            if(value instanceof Date){
+            if (value instanceof Date) {
                 value = dateFormat.format(value);
             }
             return super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);

@@ -69,15 +69,16 @@
                 </properties>
                 <border type="line" title-justification="2"/>
                 <children>
-                  <scrollpane id="b6e50" binding="jscrollTable">
+                  <scrollpane id="b6e50" binding="jScrollPane">
                     <constraints>
                       <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="7" hsize-policy="7" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
                     </constraints>
                     <properties>
-                      <autoscrolls value="true"/>
-                      <verticalScrollBarPolicy value="22"/>
+                      <autoscrolls value="false"/>
+                      <horizontalScrollBarPolicy value="32"/>
+                      <verticalScrollBarPolicy value="20"/>
                     </properties>
-                    <border type="line">
+                    <border type="line" title-position="4">
                       <title-color color="-4478464"/>
                     </border>
                     <children>
@@ -97,7 +98,7 @@
                           <gridColor color="-9145228"/>
                           <maximumSize width="2147483647" height="32000"/>
                           <opaque value="true"/>
-                          <preferredScrollableViewportSize width="4500" height="400"/>
+                          <preferredScrollableViewportSize width="600" height="400"/>
                           <preferredSize width="400" height="32"/>
                           <requestFocusEnabled value="true"/>
                           <rowSelectionAllowed value="true"/>

@@ -1,5 +1,6 @@
 package GUI;
 
+import Core.AuditHistory;
 import Core.Employee;
 import DBconnection.DbConnect;
 import GUI.TableModels.EmployeeTableModel;
@@ -28,7 +29,7 @@ public class EmployeeSearchApp extends JFrame {
     private JTextField textFieldLoggedBy;
     private JButton butExit;
     private JPanel panelForTable;
-    private JScrollPane jscrollTable;
+    private JScrollPane jScrollPane;
     private JButton butDeleteEmployee;
 
     public EmployeeSearchApp(DbConnect theDbConnect) {
@@ -47,7 +48,6 @@ public class EmployeeSearchApp extends JFrame {
         table1.setFont(new Font("Calibri", Font.ITALIC, 16));
 
         //add working vercticalscroll
-
 
         textFieldLoggedBy.setEnabled(false);
         setIconImage(icon);
@@ -140,23 +140,30 @@ public class EmployeeSearchApp extends JFrame {
         butViewHistory.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                AuditHistoryDialog auditHistoryDialog = new AuditHistoryDialog();
                 int row = table1.getSelectedRow();
                 if (row < 0) {
-                    JOptionPane.showMessageDialog(EmployeeSearchApp.this,
-                            "you must select row", "Error", JOptionPane.ERROR_MESSAGE);
-                    return;
-                }
+                    System.out.println("all history!");
+                    java.util.List<AuditHistory> auditHistoryList = null;
+                    try {
+                        auditHistoryList = dbConnect.getAuditHIstoryAll();
+                    } catch (SQLException e1) {
+                        e1.printStackTrace();
+                    }
+                    auditHistoryDialog.populate(null, auditHistoryList);
+                    auditHistoryDialog.setVisible(true);
 
-                Employee tempEmployee = (Employee) table1.getValueAt(row, EmployeeTableModel.OBJECT_COL);
-
-                try {
+                } else {
+                    Employee tempEmployee = (Employee) table1.getValueAt(row, EmployeeTableModel.OBJECT_COL);
                     int emplId = tempEmployee.getId();
-                    java.util.List<Core.AuditHistory> auditHistoryList = dbConnect.getAuditHIstory(emplId);
-                    AuditHistoryDialog auditHistoryDialog = new AuditHistoryDialog();
+                    java.util.List<AuditHistory> auditHistoryList = null;
+                    try {
+                        auditHistoryList = dbConnect.getAuditHIstory(emplId);
+                    } catch (SQLException e1) {
+                        e1.printStackTrace();
+                    }
                     auditHistoryDialog.populate(tempEmployee, auditHistoryList);
                     auditHistoryDialog.setVisible(true);
-                } catch (SQLException e1) {
-                    e1.printStackTrace();
                 }
             }
         });
@@ -170,7 +177,7 @@ public class EmployeeSearchApp extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 int row = table1.getSelectedRow();
-                if(row<0){
+                if (row < 0) {
                     JOptionPane.showMessageDialog(EmployeeSearchApp.this, "Choose a row to del please", "Error",
                             JOptionPane.ERROR_MESSAGE);
                     return;
@@ -178,7 +185,7 @@ public class EmployeeSearchApp extends JFrame {
 
                 Employee tempEmployeeForGetId = (Employee) table1.getValueAt(row, EmployeeTableModel.OBJECT_COL);
                 int selectedIdEmployee = tempEmployeeForGetId.getId();
-                System.out.println("delete with id: " +selectedIdEmployee);
+                System.out.println("delete with id: " + selectedIdEmployee);
                 dbConnect.deleteEmployee(selectedIdEmployee);
                 try {
                     refrestEmployeeView();

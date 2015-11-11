@@ -120,6 +120,7 @@ public class LoginDialog extends JDialog {
             } else {
                 dispose();
             }
+
         }
     }
 
