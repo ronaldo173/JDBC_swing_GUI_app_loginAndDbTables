@@ -6,27 +6,18 @@ import java.util.Date;
  * Created by Santer on 10.11.2015.
  */
 public class AuditHistory {
-    private int userid, employeeId;
+    private int employeeId;
     private String action;
     private Date actionDateTime;
 
     private String userFirstName, userLastName;
 
-    public AuditHistory(int userid, int employeeId, String action, Date actionDateTime, String userFirstName, String userLastName) {
-        this.userid = userid;
+    public AuditHistory( int employeeId, String action, Date actionDateTime, String userFirstName, String userLastName) {
         this.employeeId = employeeId;
         this.action = action;
         this.actionDateTime = actionDateTime;
         this.userFirstName = userFirstName;
         this.userLastName = userLastName;
-    }
-
-    public int getUserid() {
-        return userid;
-    }
-
-    public void setUserid(int userid) {
-        this.userid = userid;
     }
 
     public int getEmployeeId() {
@@ -71,8 +62,8 @@ public class AuditHistory {
 
     @Override
     public String toString() {
-        return "AuditHistory{" +
-                "userid=" + userid +
+        return "AuditHistoryDialog{" +
+
                 ", employeeId=" + employeeId +
                 ", action='" + action + '\'' +
                 ", actionDateTime=" + actionDateTime +

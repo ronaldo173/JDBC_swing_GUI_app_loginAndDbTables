@@ -16,7 +16,7 @@ import java.sql.SQLException;
  */
 public class EmployeeSearchApp extends JFrame {
     Image icon;
-    ImageIcon iconSearchBut, iconExit, iconAdd, iconUpdateBig, iconUpdate, iconHistory;
+    ImageIcon iconSearchBut, iconExit, iconAdd, iconUpdateBig, iconUpdate, iconHistory, iconDelete;
     DbConnect dbConnect;
     private JPanel panelFromForm;
     private JButton butUpdateEmployee;
@@ -29,18 +29,26 @@ public class EmployeeSearchApp extends JFrame {
     private JButton butExit;
     private JPanel panelForTable;
     private JScrollPane jscrollTable;
+    private JButton butDeleteEmployee;
 
     public EmployeeSearchApp(DbConnect theDbConnect) {
 //        super();
         this.dbConnect = theDbConnect;
+        dbConnect.clearAuditHstoryDB();
 
         icon = Toolkit.getDefaultToolkit().getImage("icons/search.png");
         iconExit = new ImageIcon(new ImageIcon("icons/exit.png").getImage().getScaledInstance(128, 16, Image.SCALE_DEFAULT));
         iconAdd = new ImageIcon(new ImageIcon("icons/add.png").getImage().getScaledInstance(32, 32, Image.SCALE_DEFAULT));
         iconUpdate = new ImageIcon(new ImageIcon("icons/update.png").getImage().getScaledInstance(32, 32, Image.SCALE_DEFAULT));
-        iconHistory = new ImageIcon(new ImageIcon("icons/history.png").getImage().getScaledInstance(32, 32, Image.SCALE_DEFAULT));
+        iconHistory = new ImageIcon(new ImageIcon("icons/history.png").getImage().getScaledInstance(24, 24, Image.SCALE_DEFAULT));
+        iconDelete = new ImageIcon(new ImageIcon("icons/delete.png").getImage().getScaledInstance(32, 32, Image.SCALE_DEFAULT));
         iconSearchBut = new ImageIcon(icon.getScaledInstance(24, 24, Image.SCALE_DEFAULT));
         table1.setBackground(Color.GRAY);
+        table1.setFont(new Font("Calibri", Font.ITALIC, 16));
+
+        //add working vercticalscroll
+
+
         textFieldLoggedBy.setEnabled(false);
         setIconImage(icon);
         setContentPane(panelFromForm);
@@ -50,9 +58,23 @@ public class EmployeeSearchApp extends JFrame {
         butAddEmployee.setIcon(iconAdd);
         butUpdateEmployee.setIcon(iconUpdate);
         butViewHistory.setIcon(iconHistory);
+        butDeleteEmployee.setIcon(iconDelete);
         butAddEmployee.setHorizontalTextPosition(JButton.LEFT);
         butViewHistory.setHorizontalTextPosition(JButton.LEFT);
         butUpdateEmployee.setHorizontalTextPosition(JButton.LEFT);
+        butDeleteEmployee.setHorizontalTextPosition(JButton.LEFT);
+
+        //fill table from db
+        java.util.List<Employee> employeeList = null;
+        try {
+            employeeList = dbConnect.getAllEmployees();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        EmployeeTableModel employeeTableModel = new EmployeeTableModel(employeeList);
+        table1.setModel(employeeTableModel);
+
 
         pack();
         setLocationRelativeTo(null);
@@ -63,7 +85,7 @@ public class EmployeeSearchApp extends JFrame {
         butSearch.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                System.out.println("Search");
+                System.out.println("pressed Search");
 
                 try {
                     String lastName = textFieldLastName.getText();
@@ -78,7 +100,6 @@ public class EmployeeSearchApp extends JFrame {
 
                     EmployeeTableModel employeeTableModel = new EmployeeTableModel(employeeList);
                     table1.setModel(employeeTableModel);
-                    table1.setFont(new Font("Calibri", Font.ITALIC, 16));
 
                 } catch (SQLException e1) {
                     JOptionPane.showMessageDialog(EmployeeSearchApp.this, "Error Search: "
@@ -119,14 +140,46 @@ public class EmployeeSearchApp extends JFrame {
         butViewHistory.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                AuditHistory auditHistory = new AuditHistory();
-                auditHistory.setVisible(true);
+                int row = table1.getSelectedRow();
+                if (row < 0) {
+                    JOptionPane.showMessageDialog(EmployeeSearchApp.this,
+                            "you must select row", "Error", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+
+                Employee tempEmployee = (Employee) table1.getValueAt(row, EmployeeTableModel.OBJECT_COL);
+
+                try {
+                    int emplId = tempEmployee.getId();
+                    java.util.List<Core.AuditHistory> auditHistoryList = dbConnect.getAuditHIstory(emplId);
+                    AuditHistoryDialog auditHistoryDialog = new AuditHistoryDialog();
+                    auditHistoryDialog.populate(tempEmployee, auditHistoryList);
+                    auditHistoryDialog.setVisible(true);
+                } catch (SQLException e1) {
+                    e1.printStackTrace();
+                }
             }
         });
         butExit.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 dispose();
+            }
+        });
+        butDeleteEmployee.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int row = table1.getSelectedRow();
+                if(row<0){
+                    JOptionPane.showMessageDialog(EmployeeSearchApp.this, "Choose a row to del please", "Error",
+                            JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+
+                Employee tempEmployeeForGetId = (Employee) table1.getValueAt(row, EmployeeTableModel.OBJECT_COL);
+                int selectedIdEmployee = tempEmployeeForGetId.getId();
+                System.out.println(selectedIdEmployee);
+
             }
         });
     }

@@ -16,6 +16,10 @@ import java.util.Properties;
  * Created by Santer on 09.11.2015.
  */
 public class DbConnect {
+    public Connection getConnection() {
+        return connection;
+    }
+
     private Connection connection;
 
     public DbConnect() throws IOException {
@@ -34,14 +38,6 @@ public class DbConnect {
             e.printStackTrace();
         }
         System.out.println("Connected to db: " + url);
-    }
-
-    public static void main(String[] args) throws IOException, SQLException {
-        DbConnect dbConnect = new DbConnect();
-        Employee employee = new Employee("Vitaliy", "Klichko", "kli4@mail.ru",
-                BigDecimal.valueOf(111000));
-        System.out.println(employee);
-        dbConnect.addEmployee(employee, 13);
     }
 
     public boolean checkLoginPassword(String log, String pass) throws SQLException {
@@ -65,7 +61,7 @@ public class DbConnect {
         }
     }
 
-    public void updateEmployee(Employee employee, int userId) throws SQLException {
+    public void updateEmployee(Employee employee, int employeeId) throws SQLException {
         System.out.println("method updateEmployee");
         System.out.println(employee);
         PreparedStatement preparedStatement = null;
@@ -82,6 +78,18 @@ public class DbConnect {
             preparedStatement.setInt(5, employee.getId());
 
             preparedStatement.executeUpdate();
+
+            ///*
+            //audit
+            preparedStatement = connection.prepareStatement("INSERT INTO audit_history" +
+                    "(employee_id, action, action_date_time) VALUES " +
+                    "(?, ?, ?)");
+
+            preparedStatement.setInt(1, employeeId);
+            preparedStatement.setString(2, "Update employee");
+            preparedStatement.setTimestamp(3, new Timestamp(System.currentTimeMillis()));
+            preparedStatement.executeUpdate();
+
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {
@@ -90,7 +98,7 @@ public class DbConnect {
         System.out.println("------update------");
     }
 
-    public void addEmployee(Employee employee, int userId) throws SQLException {
+    public void addEmployee(Employee employee, int employeeId) throws SQLException {
         PreparedStatement preparedStatement = null;
 
         try {
@@ -102,6 +110,19 @@ public class DbConnect {
             preparedStatement.setString(3, employee.getEmail());
             preparedStatement.setBigDecimal(4, employee.getSalary());
 //            preparedStatement.setInt();
+
+            preparedStatement.executeUpdate();
+
+            ///
+            ///Add audit history table db
+            //
+            employee.setId(employeeId);
+            System.out.println("**from add employee " + employee.getId());
+            preparedStatement = connection.prepareStatement("Insert into audit_history ( employee_id," +
+                    "action, action_date_time) VALUES ( ?, ?, ?)");
+            preparedStatement.setInt(1, employee.getId());
+            preparedStatement.setString(2, "Added new employee");
+            preparedStatement.setTimestamp(3, new Timestamp(System.currentTimeMillis()));
 
             preparedStatement.executeUpdate();
         } finally {
@@ -202,6 +223,9 @@ public class DbConnect {
     }
 
     public List<AuditHistory> getAuditHIstory(int employeeID) throws SQLException {
+        System.out.println("**** FROM getAuditHist ***");
+        System.out.println("called getAuditHIstory.....employee id = " + employeeID);
+        System.out.println("***********");
         List<AuditHistory> list = new ArrayList<>();
 
         Statement statement = null;
@@ -210,25 +234,26 @@ public class DbConnect {
         try {
             statement = connection.createStatement();
 
+            String mysql = "select employee_id, action, action_date_time, first_name, last_name " +
+                    "from audit_history INNER JOIN employees " +
+                    "where employee_id=" + employeeID + " AND employees.id = " + employeeID;
 
-            String sql = "SELECT history.user_id, history.employee_id, history.action, history.action_date_time, users.first_name, users.last_name  "
-                    + "FROM audit_history history, users users "
-                    + "WHERE history.user_id=users.id AND history.employee_id=" + employeeID;
-
-            resultSet = statement.executeQuery(sql);
+            resultSet = statement.executeQuery(mysql);
 
             while (resultSet.next()) {
-                int userId = resultSet.getInt("history.user_id");
-                String action = resultSet.getString("history.action");
+                String action = resultSet.getString("action");
 
-                Timestamp timestamp = resultSet.getTimestamp("history.action_date_time");
+                Timestamp timestamp = resultSet.getTimestamp("action_date_time");
                 Date actionDateTime = new Date(timestamp.getTime());
 
-                String userFirstName = resultSet.getString("users.first_name");
-                String userLastName = resultSet.getString("users.last_name");
+                String userFirstName = resultSet.getString("first_name");
+                String userLastName = resultSet.getString("last_name");
 
-                AuditHistory temp = new AuditHistory(userId, employeeID, action, actionDateTime, userFirstName, userLastName);
+                AuditHistory temp = new AuditHistory(employeeID, action, actionDateTime, userFirstName, userLastName);
                 list.add(temp);
+            }
+            for (AuditHistory auditHistory : list) {
+                System.out.println(auditHistory);
             }
             return list;
 
@@ -244,5 +269,18 @@ public class DbConnect {
         String email = resSet.getString("email");
 
         return new User(id, lastName, firstName, email);
+    }
+
+    public void clearAuditHstoryDB() {
+        //at start of app we clear audit history table
+        Statement statement = null;
+
+        try {
+            statement = connection.createStatement();
+            statement.executeUpdate("DELETE from audit_history WHERE id>0");
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 }

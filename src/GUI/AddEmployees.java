@@ -7,7 +7,10 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.math.BigDecimal;
+import java.sql.Connection;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 
 public class AddEmployees extends JDialog {
     ImageIcon iconAdd;
@@ -123,6 +126,7 @@ public class AddEmployees extends JDialog {
             tempEmployee.setFirstName(firstName);
             tempEmployee.setEmail(email);
             tempEmployee.setSalary(salary);
+            tempEmployee.setId(previousEmployee.getId());
         } else {
             tempEmployee = new Employee(lastName, firstName, email, salary);
         }
@@ -130,9 +134,9 @@ public class AddEmployees extends JDialog {
         //save to db
         try {
             if (isUpdateMode) {
-                dbConnect.updateEmployee(tempEmployee, 0);
+                dbConnect.updateEmployee(tempEmployee, tempEmployee.getId());
             } else {
-                dbConnect.addEmployee(tempEmployee, 0);
+                dbConnect.addEmployee(tempEmployee, getLastIdIncr());
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -149,6 +153,25 @@ public class AddEmployees extends JDialog {
         JOptionPane.showMessageDialog(employeeSearchApp, "Employee saves succesfully!",
                 "Saved!", JOptionPane.INFORMATION_MESSAGE);
 
+    }
+
+    private int getLastIdIncr() {
+        int id = 0;
+        Connection connection = dbConnect.getConnection();
+        Statement statement = null;
+        ResultSet resultSet = null;
+        try {
+            statement = connection.createStatement();
+            resultSet = statement.executeQuery("SELECT max(id) from employees");
+            while (resultSet.next()) {
+                id = resultSet.getInt(1) +1;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        System.out.println("GetlastId +1: " + id);
+
+        return id;
     }
 
     private BigDecimal convertToBigDecimal(String text) {

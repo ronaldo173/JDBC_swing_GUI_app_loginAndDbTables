@@ -1,10 +1,18 @@
 package GUI;
 
+import Core.AuditHistory;
+import Core.Employee;
+import GUI.TableModels.AuditHistoryTableModel;
+
 import javax.swing.*;
+import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.TableCellRenderer;
 import java.awt.*;
 import java.awt.event.*;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
-public class AuditHistory extends JDialog {
+public class AuditHistoryDialog extends JDialog {
     private JPanel contentPane;
     private JButton buttonOK;
     private JLabel labelEmployee;
@@ -12,7 +20,7 @@ public class AuditHistory extends JDialog {
     private JButton buttonCancel;
     private Image image;
 
-    public AuditHistory() {
+    public AuditHistoryDialog() {
         image = Toolkit.getDefaultToolkit().getImage("icons/history.png");
         setContentPane(contentPane);
         setModal(true);
@@ -48,7 +56,7 @@ public class AuditHistory extends JDialog {
     }
 
     public static void main(String[] args) {
-        AuditHistory dialog = new AuditHistory();
+        AuditHistoryDialog dialog = new AuditHistoryDialog();
         dialog.pack();
         dialog.setVisible(true);
         System.exit(0);
@@ -56,11 +64,34 @@ public class AuditHistory extends JDialog {
 
     private void onOK() {
 // add your code here
+        setVisible(false);
         dispose();
     }
 
     private void onCancel() {
 // add your code here if necessary
         dispose();
+    }
+
+    public void populate(Employee tempEmployee, java.util.List<AuditHistory> auditHistoryList) {
+    labelEmployee.setText(tempEmployee.getFirstName() + " " + tempEmployee.getLastName());
+
+        AuditHistoryTableModel model = new AuditHistoryTableModel(auditHistoryList);
+        table1.setModel(model);
+
+        TableCellRenderer tableCellRenderer = new DateTimeCellRender();
+        table1.getColumnModel().getColumn(AuditHistoryTableModel.DATE_TIME).setCellRenderer(tableCellRenderer);
+    }
+
+    private final class DateTimeCellRender extends DefaultTableCellRenderer {
+       SimpleDateFormat dateFormat = new SimpleDateFormat("dd//MM//yy hh:mm:ss");
+
+        @Override
+        public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+            if(value instanceof Date){
+                value = dateFormat.format(value);
+            }
+            return super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+        }
     }
 }

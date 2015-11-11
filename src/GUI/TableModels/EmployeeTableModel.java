@@ -10,12 +10,13 @@ import java.util.List;
  */
 public class EmployeeTableModel extends AbstractTableModel {
     public static final int OBJECT_COL = -1;
-    private static final int LAST_NAME_COL = 0;
-    private static final int FIRST_NAME_COL = 1;
-    private static final int EMAIL_COL = 2;
-    private static final int SALARY_COL = 3;
+    private static final int ID_COL = 0;
+    private static final int LAST_NAME_COL = 1;
+    private static final int FIRST_NAME_COL = 2;
+    private static final int EMAIL_COL = 3;
+    private static final int SALARY_COL = 4;
 
-    private String[] colNames = {"Last name", "First name", "Email",
+    private String[] colNames = {"id", "Last name", "First name", "Email",
             "Salary"};
     private List<Employee> employees;
 
@@ -40,7 +41,7 @@ public class EmployeeTableModel extends AbstractTableModel {
 
     @Override
     public Class<?> getColumnClass(int columnIndex) {
-        return getValueAt(0, columnIndex).getClass();
+        return getValueAt(1, columnIndex).getClass();
     }
 
     @Override
@@ -48,6 +49,8 @@ public class EmployeeTableModel extends AbstractTableModel {
         Employee employee = employees.get(rowIndex);
 
         switch (columnIndex) {
+            case ID_COL:
+                return employee.getId();
             case LAST_NAME_COL:
                 return employee.getLastName();
             case FIRST_NAME_COL:
