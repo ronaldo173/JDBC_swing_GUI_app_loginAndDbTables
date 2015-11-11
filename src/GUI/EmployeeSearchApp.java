@@ -178,8 +178,13 @@ public class EmployeeSearchApp extends JFrame {
 
                 Employee tempEmployeeForGetId = (Employee) table1.getValueAt(row, EmployeeTableModel.OBJECT_COL);
                 int selectedIdEmployee = tempEmployeeForGetId.getId();
-                System.out.println(selectedIdEmployee);
-
+                System.out.println("delete with id: " +selectedIdEmployee);
+                dbConnect.deleteEmployee(selectedIdEmployee);
+                try {
+                    refrestEmployeeView();
+                } catch (SQLException e1) {
+                    e1.printStackTrace();
+                }
             }
         });
     }

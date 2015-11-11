@@ -282,5 +282,18 @@ public class DbConnect {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+
+
+    }
+
+    public void deleteEmployee(int selectedIdEmployee) {
+        Statement statement = null;
+
+        try {
+            statement = connection.createStatement();
+            statement.executeUpdate("DELETE FROM employees WHERE id = " + selectedIdEmployee);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 }
